@@ -38,7 +38,8 @@ namespace OpenRCT2::Scripting
     private:
         InteractiveConsole& _console;
         IPlatformEnvironment& _env;
-        duk_context * _context;
+        bool _initialised{};
+        duk_context * _context{};
         std::queue<std::tuple<std::promise<void>, std::string>> _evalQueue;
 
     public:
@@ -46,6 +47,7 @@ namespace OpenRCT2::Scripting
         ScriptEngine(ScriptEngine&&) = delete;
         ~ScriptEngine();
 
+        void Initialise();
         void Update();
         std::future<void> Eval(const std::string &s);
     };
