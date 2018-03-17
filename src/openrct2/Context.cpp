@@ -73,6 +73,7 @@
 #include "network/network.h"
 #include "network/twitch.h"
 #include "platform/platform.h"
+#include "scripting/ScriptEngine.h"
 #include "util/Util.h"
 
 using namespace OpenRCT2;
@@ -80,6 +81,7 @@ using namespace OpenRCT2::Audio;
 using namespace OpenRCT2::Drawing;
 using namespace OpenRCT2::Localisation;
 using namespace OpenRCT2::Paint;
+using namespace OpenRCT2::Scripting;
 using namespace OpenRCT2::Ui;
 
 namespace OpenRCT2
@@ -102,6 +104,7 @@ namespace OpenRCT2
         std::unique_ptr<DiscordService> _discordService;
 #endif
         StdInOutConsole             _stdInOutConsole;
+        ScriptEngine                _scriptEngine;
 
         // Game states
         std::unique_ptr<TitleScreen> _titleScreen;
@@ -133,9 +136,10 @@ namespace OpenRCT2
             const std::shared_ptr<IAudioContext>& audioContext,
             const std::shared_ptr<IUiContext>& uiContext)
             : _env(env),
-            _audioContext(audioContext),
-            _uiContext(uiContext),
-            _localisationService(std::make_shared<LocalisationService>(env))
+              _audioContext(audioContext),
+              _uiContext(uiContext),
+              _localisationService(std::make_shared<LocalisationService>(env)),
+              _scriptEngine(_stdInOutConsole, *env)
         {
             Instance = this;
         }
@@ -164,6 +168,11 @@ namespace OpenRCT2
         std::shared_ptr<IUiContext> GetUiContext() override
         {
             return _uiContext;
+        }
+
+        Scripting::ScriptEngine& GetScriptEngine() override
+        {
+            return _scriptEngine;
         }
 
         Park * GetPark() override
@@ -959,7 +968,7 @@ namespace OpenRCT2
 
             twitch_update();
             chat_update();
-            _stdInOutConsole.ProcessEvalQueue();
+            _scriptEngine.Update();
             _uiContext->Update();
         }
 

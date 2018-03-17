@@ -88,6 +88,11 @@ namespace OpenRCT2
         class LocalisationService;
     }
 
+    namespace Scripting
+    {
+        class ScriptEngine;
+    }
+
     namespace Ui
     {
         interface IUiContext;
@@ -105,6 +110,7 @@ namespace OpenRCT2
         virtual Park * GetPark() abstract;
         virtual std::shared_ptr<IPlatformEnvironment> GetPlatformEnvironment() abstract;
         virtual Localisation::LocalisationService& GetLocalisationService() abstract;
+        virtual Scripting::ScriptEngine& GetScriptEngine() abstract;
         virtual std::shared_ptr<IObjectManager> GetObjectManager() abstract;
         virtual std::shared_ptr<IObjectRepository> GetObjectRepository() abstract;
         virtual ITrackDesignRepository * GetTrackDesignRepository() abstract;
