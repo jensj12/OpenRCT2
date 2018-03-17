@@ -145,7 +145,8 @@ if (HAVE_DISCORD_RPC)
 endif()
 
 # Includes
-target_include_directories(${PROJECT} SYSTEM PRIVATE ${LIBZIP_INCLUDE_DIRS})
+target_include_directories(${PROJECT} SYSTEM PRIVATE ${LIBZIP_INCLUDE_DIRS}
+                                                     "${CMAKE_CURRENT_LIST_DIR}/thirdparty")
 target_include_directories(${PROJECT} PUBLIC ${JANSSON_INCLUDE_DIRS})
 target_include_directories(${PROJECT} PRIVATE ${DUKTAPE_INCLUDE_DIRS}
                                               ${PNG_INCLUDE_DIRS}
