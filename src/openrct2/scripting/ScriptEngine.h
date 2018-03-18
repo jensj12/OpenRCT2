@@ -43,6 +43,7 @@ namespace OpenRCT2::Scripting
         duk_context * _context{};
         std::queue<std::tuple<std::promise<void>, std::string>> _evalQueue;
         std::vector<Plugin> _plugins;
+        uint32 _lastHotReloadCheckTick{};
 
     public:
         ScriptEngine(InteractiveConsole& console, IPlatformEnvironment& env);
@@ -56,5 +57,6 @@ namespace OpenRCT2::Scripting
         void Initialise();
         void LoadPlugins();
         void StartPlugins();
+        void AutoReloadPlugins();
     };
 }
