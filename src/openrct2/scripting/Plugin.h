@@ -16,45 +16,37 @@
 
 #pragma once
 
-#include "../common.h"
-#include "Plugin.h"
-#include <future>
-#include <queue>
+#include <memory>
 #include <string>
-
-struct duk_hthread;
-typedef struct duk_hthread duk_context;
-
-class InteractiveConsole;
-
-namespace OpenRCT2
-{
-    interface IPlatformEnvironment;
-}
+#include <vector>
+#include <dukglue/dukglue.h>
 
 namespace OpenRCT2::Scripting
 {
-    class ScriptEngine
+    struct PluginMetadata
+    {
+        std::string Name;
+        std::string Version;
+        std::vector<std::string> Authors;
+        DukValue Main;
+    };
+
+    class Plugin
     {
     private:
-        InteractiveConsole& _console;
-        IPlatformEnvironment& _env;
-        bool _initialised{};
-        duk_context * _context{};
-        std::queue<std::tuple<std::promise<void>, std::string>> _evalQueue;
-        std::vector<Plugin> _plugins;
+        duk_context * const _context;
+        std::string const _path;
+        PluginMetadata _metadata;
 
     public:
-        ScriptEngine(InteractiveConsole& console, IPlatformEnvironment& env);
-        ScriptEngine(ScriptEngine&) = delete;
-        ~ScriptEngine();
+        Plugin(duk_context * context, const std::string &path);
+        Plugin(const Plugin&) = delete;
+        Plugin(const Plugin&&);
 
-        void Update();
-        std::future<void> Eval(const std::string &s);
+        void Load();
+        void Start();
 
     private:
-        void Initialise();
-        void LoadPlugins();
-        void StartPlugins();
+        static PluginMetadata GetMetadata(const DukValue& dukMetadata);
     };
 }
