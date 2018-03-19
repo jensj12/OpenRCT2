@@ -17,6 +17,7 @@
 #pragma once
 
 #include "../common.h"
+#include "HookEngine.h"
 #include "Plugin.h"
 #include <future>
 #include <queue>
@@ -34,6 +35,16 @@ namespace OpenRCT2
 
 namespace OpenRCT2::Scripting
 {
+    class ScriptExecutionInfo
+    {
+    private:
+        Plugin * _plugin;
+
+    public:
+        Plugin * GetCurrentPlugin() { return _plugin; }
+        void SetCurrentPlugin(Plugin * value) { _plugin = value; }
+    };
+
     class ScriptEngine
     {
     private:
@@ -44,11 +55,15 @@ namespace OpenRCT2::Scripting
         std::queue<std::tuple<std::promise<void>, std::string>> _evalQueue;
         std::vector<Plugin> _plugins;
         uint32 _lastHotReloadCheckTick{};
+        HookEngine _hookEngine;
+        ScriptExecutionInfo _execInfo;
 
     public:
         ScriptEngine(InteractiveConsole& console, IPlatformEnvironment& env);
         ScriptEngine(ScriptEngine&) = delete;
         ~ScriptEngine();
+
+        HookEngine& GetHookEngine() { return _hookEngine; }
 
         void Update();
         std::future<void> Eval(const std::string &s);
