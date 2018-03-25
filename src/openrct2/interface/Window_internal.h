@@ -62,6 +62,7 @@ struct rct_window {
         scenery_variables scenery;
         track_list_variables track_list;
         error_variables error;
+        void * custom_info;
     };
     sint16 page;                    // 0x48A
     union {
