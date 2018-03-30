@@ -1,5 +1,5 @@
+#include <linenoise.hpp>
 #include "../Context.h"
-#include "../thirdparty/linenoise.hpp"
 #include "../OpenRCT2.h"
 #include "../platform/Platform2.h"
 #include "../scripting/ScriptEngine.h"
