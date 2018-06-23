@@ -8172,6 +8172,10 @@ loc_6DAEB9:
             if (regs.eax < _vehicleVelocityF64E08)
             {
                 vehicle->acceleration = -_vehicleVelocityF64E08 * 16;
+                if (16 * (vehicle->velocity - regs.eax) + vehicle->acceleration < 0 && vehicle->velocity > regs.eax)
+                {
+                    vehicle->acceleration = (regs.eax - vehicle->velocity) * 16;
+                }
             }
             else if (!(gCurrentTicks & 0x0F))
             {
