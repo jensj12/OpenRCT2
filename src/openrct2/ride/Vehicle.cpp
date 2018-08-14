@@ -6705,6 +6705,16 @@ static void check_and_apply_block_section_stop_site(rct_vehicle* vehicle)
 static void update_velocity(rct_vehicle* vehicle)
 {
     int32_t nextVelocity = vehicle->acceleration + vehicle->velocity;
+
+    // Don't overshoot brake/booster target value
+    int32_t targetVelocity = vehicle->brake_speed << 16;
+    if ((nextVelocity < targetVelocity && vehicle->velocity > targetVelocity)
+        || (nextVelocity > targetVelocity && vehicle->velocity < targetVelocity))
+    {
+        log_warning("Corrected velocity from %i to %i of ride %i, at (%d, %d)", nextVelocity, targetVelocity, vehicle->ride, vehicle->x / 32, vehicle->y / 32);
+        nextVelocity = targetVelocity;
+    }
+
     if (vehicle->update_flags & VEHICLE_UPDATE_FLAG_ZERO_VELOCITY)
     {
         nextVelocity = 0;
@@ -8172,10 +8182,6 @@ loc_6DAEB9:
             if (regs.eax < _vehicleVelocityF64E08)
             {
                 vehicle->acceleration = -_vehicleVelocityF64E08 * 16;
-                if (16 * (vehicle->velocity - regs.eax) + vehicle->acceleration < 0 && vehicle->velocity > regs.eax)
-                {
-                    vehicle->acceleration = (regs.eax - vehicle->velocity) * 16;
-                }
             }
             else if (!(gCurrentTicks & 0x0F))
             {
