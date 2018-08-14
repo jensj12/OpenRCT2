@@ -6702,12 +6702,20 @@ static void check_and_apply_block_section_stop_site(rct_vehicle* vehicle)
  *
  *  rct2: 0x006DADAE
  */
-static void update_velocity(rct_vehicle* vehicle)
+static void update_velocity(rct_vehicle* vehicle, Ride* ride)
 {
     int32_t nextVelocity = vehicle->acceleration + vehicle->velocity;
 
     // Don't overshoot brake/booster target value
     int32_t targetVelocity = vehicle->brake_speed << 16;
+    if (track_element_is_booster(ride->type, vehicle->track_type >> 2))
+    {
+        targetVelocity = get_booster_speed(ride->type, targetVelocity);
+    }
+    if (nextVelocity < 0 && vehicle->velocity < 0)
+    {
+        targetVelocity = -targetVelocity;
+    }
     if ((nextVelocity < targetVelocity && vehicle->velocity > targetVelocity)
         || (nextVelocity > targetVelocity && vehicle->velocity < targetVelocity))
     {
@@ -9609,7 +9617,7 @@ int32_t vehicle_update_track_motion(rct_vehicle* vehicle, int32_t* outStation)
 
     vehicle_update_track_motion_up_stop_check(vehicle);
     check_and_apply_block_section_stop_site(vehicle);
-    update_velocity(vehicle);
+    update_velocity(vehicle, ride);
 
     if (_vehicleVelocityF64E08 < 0)
     {
