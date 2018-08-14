@@ -6711,7 +6711,6 @@ static void update_velocity(rct_vehicle* vehicle)
     if ((nextVelocity < targetVelocity && vehicle->velocity > targetVelocity)
         || (nextVelocity > targetVelocity && vehicle->velocity < targetVelocity))
     {
-        log_warning("Corrected velocity from %i to %i of ride %i, at (%d, %d)", nextVelocity, targetVelocity, vehicle->ride, vehicle->x / 32, vehicle->y / 32);
         nextVelocity = targetVelocity;
     }
 
